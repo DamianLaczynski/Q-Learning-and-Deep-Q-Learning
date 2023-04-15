@@ -45,6 +45,12 @@ class Game:
         else:
             return False
 
+    def isInSnakeBody(self, foodx, foody, snake):
+        for x in snake.snakeList[:]:
+            if x == [foodx, foody]:
+                return True
+
+
     def start(self):
         game_over = False
 
@@ -54,12 +60,18 @@ class Game:
 
         fruit.randNewPosition(self.width, self.height)
 
+        while self.isInSnakeBody(fruit.x, fruit.y, snake):
+            fruit.randNewPosition(self.width, self.height)
+
+
         #main loop
         while not game_over:
             # sterowanie snake-m
             snake.move(self.direction)
             if self.isColision(snake, fruit):
                 fruit.randNewPosition(self.width, self.height)
+                while self.isInSnakeBody(fruit.x, fruit.y, snake):
+                    fruit.randNewPosition(self.width, self.height)
                 snake.addNewElem()
                 self.score += 1
 
