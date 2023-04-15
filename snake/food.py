@@ -4,6 +4,7 @@ import random
 class Food:
     x = 0
     y = 0
+    value = 2
 
     def randNewPosition(self, x_range, y_range):
         self.x = random.randrange(0, x_range, 1)

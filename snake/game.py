@@ -25,7 +25,7 @@ class Game:
         for elem in snake.snakeList:
             self.board[elem[1]][elem[0]] = 1
 
-        self.board[fruit.y][fruit.x] = 1
+        self.board[fruit.y][fruit.x] = fruit.value
 
     def getScore(self):
         return self.score
