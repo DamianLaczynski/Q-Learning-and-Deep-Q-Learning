@@ -3,13 +3,12 @@ import time
 
 import game
 import numpy as np
-import matplotlib.pyplot as plt
 
 from snake import display
 
 # Board size
-size_x = 7
-size_y = 7
+size_x = 5
+size_y = 5
 
 tile_state_n = 2  # empty or not empty
 actions_n = 4  # UP, DOWN, LEFT, RIGHT

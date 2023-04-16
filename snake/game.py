@@ -1,7 +1,5 @@
-import time
 import snakeGame
 import food
-import display
 
 
 class Game:
