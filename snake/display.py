@@ -19,3 +19,5 @@ def display(game):
             print(game.getBoard()[i][j], end=' ')
 
         print()
+
+    print(game.getScore())

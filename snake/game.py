@@ -48,7 +48,13 @@ class Game:
             return False
 
     def do_action(self, action):
-        self.snake.direction = action
+        new_direction = action
+        if (self.snake.direction == 0 and new_direction == 1) or (self.snake.direction == 1 and new_direction == 0):
+            return
+        elif (self.snake.direction == 2 and new_direction == 3) or (self.snake.direction == 3 and new_direction == 2):
+            return
+        else:
+            self.snake.direction = new_direction
 
     def get_state(self):
         flat_arr = [item for sublist in self.board for item in sublist]
@@ -70,8 +76,6 @@ class Game:
             reward = 1
 
         self.updateBoard()
-
-        print(self.score)
 
         game_over = self.isEnd()
 

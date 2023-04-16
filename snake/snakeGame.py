@@ -27,7 +27,6 @@ class SnakeClass:
     def isColision(self):
         for p in self.snakeList[:-1]:
             if p == [self.x, self.y]:
-                print(p)
                 return True
         return False
 
