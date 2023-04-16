@@ -62,6 +62,9 @@ class Game:
         # Convert the flattened array into a binary number
         return int(''.join(map(str, flat_arr)), 2)
 
+    def get_fruit(self):
+        return self.fruit
+
     def step(self, action):
         self.do_action(action)
 

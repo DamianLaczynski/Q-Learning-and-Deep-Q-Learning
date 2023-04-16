@@ -13,11 +13,20 @@ def clear():
 
 
 def display(game):
-    print('\n'*20) # prints 80 line breaks
+    print('\n'*40)  # prints 80 line breaks
+    print('|' + '-' * game.width + '|')
     for i in range(game.width):
+        print('|', end='')
         for j in range(game.height):
-            print(game.getBoard()[i][j], end=' ')
-
+            if game.getBoard()[i][j] == 0:
+                print(' ', end='')
+            else:
+                if game.get_fruit().x == j and game.get_fruit().y == i:
+                    print('O', end='')
+                else:
+                    print('#', end='')
+        print('|', end=' ')
         print()
+    print('|' + '-' * game.width + '|')
 
     print(game.getScore())
