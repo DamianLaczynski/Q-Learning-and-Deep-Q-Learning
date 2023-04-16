@@ -20,7 +20,7 @@ q_table = np.zeros((states_n, actions_n))
 actions = [*range(0, actions_n)]
 
 # Hyperparameters
-episodes = 1000  # Total number of episodes
+episodes = 10000  # Total number of episodes
 learning_rate = 0.5  # Learning rate
 discount_factor = 0.9  # Discount factor
 exploration_prob = 1.0
@@ -31,8 +31,22 @@ print('Q-table before training:')
 print(q_table)
 print("Q_table: ", "{:.2f}".format(sys.getsizeof(q_table) / (1024 ** 3)), "GB")  # print amount of memory that's allocated to q_table
 
+progress = 0
+progress_bar_len = 20
+
+print("Training:\n")
+print("|" + "-" * progress_bar_len + "|")
+print("|", end='')
+
 # Training
 for e in range(episodes):
+
+    if progress > episodes / progress_bar_len:
+        progress = 0
+        print("#", end='')
+
+    progress += 1
+
     training_env = game.Game(size_x, size_y)
     state = training_env.get_state()
     done = False
@@ -55,6 +69,8 @@ for e in range(episodes):
     # exploration_prob = max(exploration_prob - exploration_prob_decay, 0)  # linear decay
     exploration_prob = max(min_exploration_prob, np.exp(-exploration_prob_decay * e))
 
+print("#|")
+
 print()
 print('Q-table after training:')
 print(q_table)
@@ -72,7 +88,7 @@ for _ in range(episodes):
         action = np.argmax(q_table[state, :])
 
         new_state, reward, done = real_env.step(action)
-        print(display.display(real_env))
+        display.display(real_env)
 
         time.sleep(1)
 
