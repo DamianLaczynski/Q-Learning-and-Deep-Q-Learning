@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 from snake import display
 
 # Board size
-size_x = 5
-size_y = 5
+size_x = 7
+size_y = 7
 
 tile_state_n = 2  # empty or not empty
 actions_n = 4  # UP, DOWN, LEFT, RIGHT
@@ -27,14 +27,19 @@ exploration_prob = 1.0
 exploration_prob_decay = 0.001
 min_exploration_prob = 0.01
 
-print('Q-table before training:')
-print(q_table)
-print("Q_table: ", "{:.2f}".format(sys.getsizeof(q_table) / (1024 ** 3)), "GB")  # print amount of memory that's allocated to q_table
-
 progress = 0
 progress_bar_len = 20
 
-print("Training:\n")
+print("Hyperparameters for training:")
+print("%dx%d [%d states]" % (size_x, size_y, tile_state_n))
+print("Learning rate:", learning_rate)
+print("Discount factor:", discount_factor)
+print("Exploration decay:", exploration_prob_decay)
+print("-> Q_table: ", "{:.2f}".format(sys.getsizeof(q_table) / (1024 ** 3)), "GB")  # print amount of memory that's allocated to q_table
+print()
+
+
+print("Training for %d episodes:" % (episodes))
 print("|" + "-" * progress_bar_len + "|")
 print("|", end='')
 
@@ -70,10 +75,6 @@ for e in range(episodes):
     exploration_prob = max(min_exploration_prob, np.exp(-exploration_prob_decay * e))
 
 print("#|")
-
-print()
-print('Q-table after training:')
-print(q_table)
 
 episodes = 1
 

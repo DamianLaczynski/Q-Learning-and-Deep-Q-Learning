@@ -87,7 +87,6 @@ class Game:
 
         new_state = self.get_state()
 
-        # still don't know if we should use all rewards gathered to this point (self.score) or just reward that we
-        # earned at this moment
+        # still don't know if we should use all rewards gathered to this point (self.score) or just reward that we earned at this moment
         return new_state, reward, game_over
         # return new_state, self.score, game_over

@@ -31,4 +31,5 @@ def display(game):
         print()
     print('|' + '-' * game.width + '|')
 
+    print()
     print(game.getScore())
