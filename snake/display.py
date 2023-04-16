@@ -22,9 +22,11 @@ def display(game):
                 print(' ', end='')
             else:
                 if game.get_fruit().x == j and game.get_fruit().y == i:
-                    print('O', end='')
+                    print('O', end='')  # fruit
+                elif game.get_snake().x == j and game.get_snake().y == i:
+                    print('@', end='')  # head
                 else:
-                    print('#', end='')
+                    print('#', end='')  # snake body
         print('|', end=' ')
         print()
     print('|' + '-' * game.width + '|')

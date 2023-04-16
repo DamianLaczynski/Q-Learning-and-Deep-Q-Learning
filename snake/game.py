@@ -65,6 +65,9 @@ class Game:
     def get_fruit(self):
         return self.fruit
 
+    def get_snake(self):
+        return self.snake
+
     def step(self, action):
         self.do_action(action)
 
