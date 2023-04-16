@@ -1,7 +1,7 @@
 class SnakeClass:
     x = 0
     y = 0
-    snakeList = []
+
     board_w = 0
     board_h = 0
 
@@ -14,14 +14,15 @@ class SnakeClass:
         self.y = start_y
         self.board_w = width
         self.board_h = height
-        snakeElem = []
-        snakeElem.append(self.x)
-        snakeElem.append(self.y + 1)
-        self.snakeList.append(snakeElem)
-        snakeHead = []
-        snakeHead.append(self.x)
-        snakeHead.append(self.y)
-        self.snakeList.append(snakeHead)
+        self.snakeElem = []
+        self.snakeElem.append(self.x)
+        self.snakeElem.append(self.y + 1)
+        self.snakeList = []
+        self.snakeList.append(self.snakeElem)
+        self.snakeHead = []
+        self.snakeHead.append(self.x)
+        self.snakeHead.append(self.y)
+        self.snakeList.append(self.snakeHead)
 
     def isColision(self):
         for p in self.snakeList[:-1]:

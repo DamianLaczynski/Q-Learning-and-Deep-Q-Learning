@@ -12,10 +12,10 @@ def clear():
         _ = system('clear')
 
 
-def display(board):
+def display(game):
     print('\n'*20) # prints 80 line breaks
-    for i in range(len(board)):
-        for j in range(len(board[i])):
-            print(board[i][j], end='')
+    for i in range(game.width):
+        for j in range(game.height):
+            print(game.getBoard()[i][j], end=' ')
 
         print()

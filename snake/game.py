@@ -3,25 +3,24 @@ import snakeGame
 import food
 import display
 
-class Game:
-    board = []
-    width = 0
-    height = 0
-    score = 0
 
+class Game:
     def __init__(self, width, height):
+        self.score = 0
         self.width = width
         self.height = height
         self.board = [[0 for j in range(height)] for i in range(width)]
-        self.snake = snakeGame.SnakeClass(int(self.width / 2), int(self.height / 2), width=self.width, height=self.height)
+        self.snake = snakeGame.SnakeClass(int(self.width / 2), int(self.height / 2), width=self.width,
+                                          height=self.height)
         self.fruit = food.Food(self.width, self.height)
+        self.updateBoard()
 
     def updateBoard(self):
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
                 self.board[i][j] = 0
 
-        #dodawanie wszystkich członów węża do tablicy
+        # dodawanie wszystkich członów węża do tablicy
         for elem in self.snake.snakeList:
             self.board[elem[1]][elem[0]] = 1
 
@@ -51,6 +50,12 @@ class Game:
     def do_action(self, action):
         self.snake.direction = action
 
+    def get_state(self):
+        flat_arr = [item for sublist in self.board for item in sublist]
+
+        # Convert the flattened array into a binary number
+        return int(''.join(map(str, flat_arr)), 2)
+
     def step(self, action):
         self.do_action(action)
 
@@ -70,6 +75,9 @@ class Game:
 
         game_over = self.isEnd()
 
-        return self.board, reward, game_over
+        new_state = self.get_state()
 
-
+        # still don't know if we should use all rewards gathered to this point (self.score) or just reward that we
+        # earned at this moment
+        return new_state, reward, game_over
+        # return new_state, self.score, game_over
