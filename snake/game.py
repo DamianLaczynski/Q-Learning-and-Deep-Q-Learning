@@ -3,7 +3,10 @@ import food
 
 
 class Game:
+
+
     def __init__(self, width, height):
+        self.mode = "soft_wall"  # soft_wall / hard_wall
         self.score = 0
         self.width = width
         self.height = height
@@ -12,6 +15,7 @@ class Game:
                                           height=self.height)
         self.fruit = food.Food(self.width, self.height)
         self.updateBoard()
+        self.null_state = 0  # a state that never happens in the environment
 
     def updateBoard(self):
         for i in range(len(self.board)):
@@ -70,7 +74,10 @@ class Game:
     def step(self, action):
         self.do_action(action)
 
-        self.snake.move()
+        hit_wall = self.snake.move()
+
+        if hit_wall and self.mode == "hard_wall":
+            return self.null_state, 0, True
 
         reward = 0
 

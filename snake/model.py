@@ -81,8 +81,8 @@ def train_model(size_x, size_y, tile_state_n, actions_n, episodes, learning_rate
 
     return q_table
 
-
-def play(size_x, size_y, episodes, q_table):
+scores = []
+def play(size_x, size_y, episodes, q_table, show_gameplay):
     for _ in range(episodes):
 
         real_env = game.Game(size_x, size_y)
@@ -93,11 +93,15 @@ def play(size_x, size_y, episodes, q_table):
         while not done:
             action = np.argmax(q_table[state, :])
 
-            real_env.get_snake().print_direction()
             new_state, reward, done = real_env.step(action)
 
-            display.display(real_env)
-
-            time.sleep(1)
+            if show_gameplay:
+                real_env.get_snake().print_direction()
+                display.display(real_env)
+                #  time.sleep(1)
 
             state = new_state
+
+        scores.append(real_env.getScore())
+
+    return scores

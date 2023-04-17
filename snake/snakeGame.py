@@ -47,28 +47,36 @@ class SnakeClass:
 
         # direction == 0 -> don't change direction
 
+        hit_wall = False
+
         # UP
         if self.direction == 0:
             self.y -= 1
             if self.y < 0:
+                hit_wall = True
                 self.y = self.board_h - 1
         # DOWN
         elif self.direction == 1:
             self.y += 1
             if self.y >= self.board_h:
+                hit_wall = True
                 self.y = 0
         # LEFT
         elif self.direction == 2:
             self.x -= 1
             if self.x < 0:
+                hit_wall = True
                 self.x = self.board_w - 1
         # RIGHT
         elif self.direction == 3:
             self.x += 1
             if self.x >= self.board_w:
+                hit_wall = True
                 self.x = 0
 
         self.snakeList.append([self.x, self.y])
         if len(self.snakeList) > 1:
             self.lastRemovedElem = self.snakeList[0]
             del self.snakeList[0]
+
+        return hit_wall
