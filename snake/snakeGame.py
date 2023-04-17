@@ -33,6 +33,16 @@ class SnakeClass:
     def addNewElem(self):
         self.snakeList.insert(0, self.lastRemovedElem)
 
+    def print_direction(self):
+        if self.direction == 0:
+            print("UP")
+        elif self.direction == 1:
+            print("DOWN")
+        elif self.direction == 2:
+            print("LEFT")
+        else:
+            print("RIGHT")
+
     def move(self):
 
         # direction == 0 -> don't change direction

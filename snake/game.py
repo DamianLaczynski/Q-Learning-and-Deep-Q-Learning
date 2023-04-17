@@ -54,6 +54,7 @@ class Game:
         else:
             self.snake.direction = new_direction
 
+
     def get_state(self):
         flat_arr = [item for sublist in self.board for item in sublist]
 

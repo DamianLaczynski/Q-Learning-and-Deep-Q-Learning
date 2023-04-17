@@ -14,6 +14,8 @@ def clear():
 
 def display(game):
     print('\n'*40)  # prints 80 line breaks
+
+    print(game.getScore())
     print('|' + '-' * game.width + '|')
     for i in range(game.width):
         print('|', end='')
@@ -32,4 +34,4 @@ def display(game):
     print('|' + '-' * game.width + '|')
 
     print()
-    print(game.getScore())
+
