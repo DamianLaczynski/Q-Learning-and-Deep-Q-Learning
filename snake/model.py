@@ -4,7 +4,7 @@ import time
 
 import numpy as np
 
-from snake import game, display
+import game, display
 
 
 def save_model(data, path):
