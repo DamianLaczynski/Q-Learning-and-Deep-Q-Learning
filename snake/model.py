@@ -98,7 +98,7 @@ def play(size_x, size_y, episodes, q_table, show_gameplay):
             if show_gameplay:
                 real_env.get_snake().print_direction()
                 display.display(real_env)
-                #  time.sleep(1)
+                time.sleep(1)
 
             state = new_state
 
