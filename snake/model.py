@@ -1,5 +1,4 @@
 import json
-import pickle
 import sys
 import time
 
@@ -9,13 +8,13 @@ import game, display
 
 
 def save_model(data, path):
-    with open(path, 'wb') as fp:
-        pickle.dump(data, fp)
+    print("Saving model...")
+    np.save(path, data)
 
 
 def load_model(path):
-    with open(path, 'rb') as fp:
-        model = pickle.load(fp)
+    print("Loading model...")
+    model = np.load(path)
 
     return model
 
@@ -23,9 +22,7 @@ def load_model(path):
 def train_model(size_x, size_y, tile_state_n, actions_n, episodes, learning_rate, discount_factor, exploration_prob_decay):
     states_n = tile_state_n ** (size_x * size_y)
 
-    q_table = dict()
-
-    # q_table = np.zeros((states_n, actions_n))
+    q_table = np.zeros((states_n, actions_n))
 
     actions = [*range(0, actions_n)]
 
@@ -40,8 +37,8 @@ def train_model(size_x, size_y, tile_state_n, actions_n, episodes, learning_rate
     print("Learning rate:", learning_rate)
     print("Discount factor:", discount_factor)
     print("Exploration decay:", exploration_prob_decay)
-    print("-> Q_table: ", "{:.2f}".format(sys.getsizeof(q_table) / (1024 ** 1)),
-          "KB")  # print amount of memory that's allocated to q_table
+    print("-> Q_table: ", "{:.2f}".format(sys.getsizeof(q_table) / (1024 ** 3)),
+          "GB")  # print amount of memory that's allocated to q_table
     print()
 
     print("Training for %d episodes:" % (episodes))
@@ -64,22 +61,16 @@ def train_model(size_x, size_y, tile_state_n, actions_n, episodes, learning_rate
         while not done:
             rand = np.random.uniform(0, 1)
 
-            if not (state in q_table):
-                q_table[state] = [0] * actions_n
-
             # If random number < epsilon, take a random action
             if rand < exploration_prob:
                 action = np.random.choice(actions)
             else:
-                action = np.argmax(q_table[state])
+                action = np.argmax(q_table[state, :])
 
             new_state, reward, done = training_env.step(action)
 
-            if not (new_state in q_table):
-                q_table[new_state] = [0] * actions_n
-
-            q_table[state][action] = q_table[state][action] + learning_rate * (
-                        reward + discount_factor * np.max(q_table[new_state]) - q_table[state][action])
+            q_table[state, action] = q_table[state, action] + learning_rate * (
+                        reward + discount_factor * np.max(q_table[new_state, :]) - q_table[state, action])
 
             state = new_state
 
@@ -91,9 +82,7 @@ def train_model(size_x, size_y, tile_state_n, actions_n, episodes, learning_rate
     return q_table
 
 
-def play(size_x, size_y, episodes, q_table, show_display):
-    scores = []
-
+def play(size_x, size_y, episodes, q_table):
     for _ in range(episodes):
 
         real_env = game.Game(size_x, size_y)
@@ -102,21 +91,13 @@ def play(size_x, size_y, episodes, q_table, show_display):
         done = False
 
         while not done:
+            action = np.argmax(q_table[state, :])
 
-            if state in q_table:
-                action = np.argmax(q_table[state])
-            else:
-                action = 0
-
+            real_env.get_snake().print_direction()
             new_state, reward, done = real_env.step(action)
 
-            if show_display:
-                display.display(real_env)
-                real_env.get_snake().print_direction()
-                time.sleep(1)
+            display.display(real_env)
+
+            time.sleep(1)
 
             state = new_state
-
-        scores.append(real_env.getScore())
-
-    return scores
