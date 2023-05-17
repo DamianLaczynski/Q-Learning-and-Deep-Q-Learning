@@ -1,4 +1,4 @@
-import snakeGame
+import snake
 import food
 
 
@@ -6,18 +6,42 @@ class Game:
 
 
     def __init__(self, width, height):
+
         self.mode = "soft_wall"  # soft_wall / hard_wall
         self.score = 0
+
         self.width = width
         self.height = height
-        self.board = [[0 for j in range(height)] for i in range(width)]
-        self.snake = snakeGame.SnakeClass(int(self.width / 2), int(self.height / 2), width=self.width,
-                                          height=self.height)
+
+        self.board = [[0 for j in range(width)] for i in range(height)]
+        self.snake = snake.Snake(self.width, self.height)
         self.fruit = food.Food(self.width, self.height)
-        self.updateBoard()
+
+        self.update_board()
         self.null_state = 0  # a state that never happens in the environment
 
-    def updateBoard(self):
+    def get_board(self):
+        return self.board
+
+    def get_score(self):
+        return self.score
+
+    def get_fruit(self):
+        return self.fruit
+
+    def get_snake(self):
+        return self.snake
+
+    def set_direction(self, direction):
+        self.snake.direction = direction
+
+    def is_end(self):
+        if self.snake.is_colision():
+            return True
+        else:
+            return False
+
+    def update_board(self):
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
                 self.board[i][j] = 0
@@ -28,28 +52,9 @@ class Game:
 
         self.board[self.fruit.y][self.fruit.x] = 1
 
-    def getBoard(self):
-        return self.board
-
-    def getScore(self):
-        return self.score
-
-    def setDirection(self, direction):
-        self.snake.direction = direction
-
-    def isColision(self):
-        if self.snake.x == self.fruit.x and self.snake.y == self.fruit.y:
-            return True
-        else:
-            return False
-
-    def isEnd(self):
-        if self.snake.isColision():
-            return True
-        else:
-            return False
-
-    def do_action(self, action):
+    def set_direction(self, action):
+        if action == None:
+            action = self.snake.direction
         new_direction = action
         if (self.snake.direction == 0 and new_direction == 1) or (self.snake.direction == 1 and new_direction == 0):
             return
@@ -58,21 +63,20 @@ class Game:
         else:
             self.snake.direction = new_direction
 
-
     def get_state(self):
         flat_arr = [item for sublist in self.board for item in sublist]
 
         # Convert the flattened array into a binary number
         return int(''.join(map(str, flat_arr)), 2)
 
-    def get_fruit(self):
-        return self.fruit
-
-    def get_snake(self):
-        return self.snake
+    def is_food_in_snake(self):
+        for elem in self.snake.snakeList:
+            if elem[0] == self.fruit.x and elem[1] == self.fruit.y:
+                return True
+        return False
 
     def step(self, action):
-        self.do_action(action)
+        self.set_direction(action)
 
         hit_wall = self.snake.move()
 
@@ -81,15 +85,17 @@ class Game:
 
         reward = 0
 
-        if self.isColision():
-            self.fruit.randNewPosition(self.width, self.height)
-            self.snake.addNewElem()
+        if self.fruit.is_colision(self.snake.x, self.snake.y):
+            self.fruit.rand_new_position()
+            while self.is_food_in_snake():
+                self.fruit.rand_new_position()
+            self.snake.add_new_element()
             self.score += 1
             reward = 1
 
-        self.updateBoard()
+        self.update_board()
 
-        game_over = self.isEnd()
+        game_over = self.is_end()
 
         new_state = self.get_state()
 

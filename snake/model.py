@@ -102,6 +102,6 @@ def play(size_x, size_y, episodes, q_table, show_gameplay):
 
             state = new_state
 
-        scores.append(real_env.getScore())
+        scores.append(real_env.get_score())
 
     return scores

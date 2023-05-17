@@ -5,7 +5,7 @@ import time
 
 
 def main():
-    my_game = game.Game(20, 20)
+    my_game = game.Game(20, 6)
     ds.display(my_game)
     while(True):
         action = inputController.get_input()

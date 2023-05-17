@@ -16,15 +16,18 @@ class Snake:
         self.board_w = width
         self.board_h = height
 
-        self.snakeElem = []
-        self.snakeElem.append(self.x)
-        self.snakeElem.append(self.y + 1)
         self.snakeList = []
-        self.snakeList.append(self.snakeElem)
-        self.snakeHead = []
-        self.snakeHead.append(self.x)
-        self.snakeHead.append(self.y)
-        self.snakeList.append(self.snakeHead)
+
+        snakeElem = []
+        snakeElem.append(self.x)
+        snakeElem.append(self.y + 1)
+
+        snakeHead = []
+        snakeHead.append(self.x)
+        snakeHead.append(self.y)
+
+        self.snakeList.append(snakeElem)
+        self.snakeList.append(snakeHead)
 
     def is_colision(self):
         for p in self.snakeList[:-1]:

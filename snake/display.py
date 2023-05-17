@@ -1,26 +1,12 @@
-from os import system, name
-
-
-# define our clear function
-def clear():
-    # for windows the name is 'nt'
-    if name == 'nt':
-        _ = system('cls')
-
-    # and for mac and linux, the os.name is 'posix'
-    else:
-        _ = system('clear')
-
-
 def display(game):
-    print('\n'*40)  # prints 80 line breaks
+    print('\n'*40)  # prints 40 line breaks
 
-    print(game.getScore())
+    print(game.get_score())
     print('|' + '-' * game.width + '|')
-    for i in range(game.width):
+    for i in range(game.height):
         print('|', end='')
-        for j in range(game.height):
-            if game.getBoard()[i][j] == 0:
+        for j in range(game.width):
+            if game.get_board()[i][j] == 0:
                 print(' ', end='')
             else:
                 if game.get_fruit().x == j and game.get_fruit().y == i:
