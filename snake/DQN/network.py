@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 
+
 class Network(nn.Module):
     def __init__(self, in_dim: int, out_dim: int):
         """Initialization."""

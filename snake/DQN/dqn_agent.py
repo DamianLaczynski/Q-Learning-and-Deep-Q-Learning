@@ -1,15 +1,18 @@
+import os
 from typing import Dict, List, Tuple
 
 import gym
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from IPython.display import clear_output
 
-from DQN_from_git.network import Network
-from DQN_from_git.replay_buffer import ReplayBuffer
+import game
+from DQN.network import Network
+from DQN.replay_buffer import ReplayBuffer
 
 
 class DQNAgent:
@@ -34,7 +37,8 @@ class DQNAgent:
 
     def __init__(
             self,
-            env: gym.Env,
+            #env: gym.Env,
+            env: game.Game,
             memory_size: int,
             batch_size: int,
             target_update: int,
@@ -94,7 +98,7 @@ class DQNAgent:
         """Select an action from the input state."""
         # epsilon greedy policy
         if self.epsilon > np.random.random():
-            selected_action = self.env.action_space.sample()
+            selected_action = self.env.action_space.sample() #TODO action_space
         else:
             selected_action = self.dqn(
                 torch.FloatTensor(state).to(self.device)
@@ -108,9 +112,8 @@ class DQNAgent:
 
     def step(self, action: np.ndarray) -> Tuple[np.ndarray, np.float64, bool]:
         """Take an action and return the response of the env."""
-        #next_state, reward, done, _ = self.env.step(action)
-        next_state, reward, terminated, truncated , _ = self.env.step(action)
-        done = truncated or terminated
+        #next_state, reward, terminated, truncated, _ = self.env.step(action)
+        next_state, reward, done = self.env.step(action) # zwraca game_over ale zmianiona nazwa na done TODO czy to to samo? i zamiast new_state to next_state
 
         if not self.is_test:
             self.transition += [reward, next_state, done]
@@ -134,7 +137,7 @@ class DQNAgent:
         """Train the agent."""
         self.is_test = False
 
-        state = self.env.reset()
+        state = self.env.reset() #TODO implement reset
         state = state[0]
         update_cnt = 0
         epsilons = []
@@ -151,7 +154,7 @@ class DQNAgent:
 
             # if episode ends
             if done:
-                state = self.env.reset()
+                state = self.env.reset() #TODO implement reset
                 state = state[0]
                 scores.append(score)
                 score = 0
@@ -179,9 +182,9 @@ class DQNAgent:
                 if frame_idx > 6000:
                     self._plot(frame_idx, scores, losses, epsilons)
 
-        self.env.close()
+        self.env.close() #TODO env.close()
 
-    def test(self, video_folder: str) -> None:
+    def test(self, video_folder: str) -> None: #TODO implement test. rm video_test and play snake with dqn
         """Test the agent."""
         self.is_test = True
 
