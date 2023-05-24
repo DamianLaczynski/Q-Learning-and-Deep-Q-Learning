@@ -60,8 +60,8 @@ class DQNAgent:
             min_epsilon (float): min value of epsilon
             gamma (float): discount factor
         """
-        obs_dim = env.observation_space.shape[0]
-        action_dim = env.action_space.n
+        obs_dim = env.observation_space
+        action_dim = env.action_space
 
         self.env = env
         self.memory = ReplayBuffer(obs_dim, memory_size, batch_size)
@@ -98,7 +98,8 @@ class DQNAgent:
         """Select an action from the input state."""
         # epsilon greedy policy
         if self.epsilon > np.random.random():
-            selected_action = self.env.action_space.sample() #TODO action_space
+            #selected_action = self.env.action_space.sample() #TODO action_space
+            selected_action = np.random.random() % 5
         else:
             selected_action = self.dqn(
                 torch.FloatTensor(state).to(self.device)
@@ -137,8 +138,8 @@ class DQNAgent:
         """Train the agent."""
         self.is_test = False
 
-        state = self.env.reset() #TODO implement reset
-        state = state[0]
+        state = self.env.reset()
+        #state = state[0]
         update_cnt = 0
         epsilons = []
         losses = []
@@ -154,8 +155,11 @@ class DQNAgent:
 
             # if episode ends
             if done:
-                state = self.env.reset() #TODO implement reset
-                state = state[0]
+                state = self.env.reset()
+
+                #przez to wywalało błędy
+                #state = state[0]
+
                 scores.append(score)
                 score = 0
 
@@ -179,10 +183,10 @@ class DQNAgent:
 
             # plotting
             if frame_idx % plotting_interval == 0:
-                if frame_idx > 6000:
-                    self._plot(frame_idx, scores, losses, epsilons)
+                #if frame_idx > 6000:
+                self._plot(frame_idx, scores, losses, epsilons)
 
-        self.env.close() #TODO env.close()
+        self.env.close()
 
     def test(self, video_folder: str) -> None: #TODO implement test. rm video_test and play snake with dqn
         """Test the agent."""

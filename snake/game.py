@@ -1,7 +1,8 @@
 import snake
 import food
+from typing import (TypeVar, Tuple, Optional)
 
-
+ObsType = TypeVar("ObsType")
 class Game:
 
 
@@ -12,6 +13,9 @@ class Game:
 
         self.width = width
         self.height = height
+        self.observation_space = width*height
+
+        self.action_space = 4
 
         self.board = [[0 for j in range(width)] for i in range(height)]
         self.snake = snake.Snake(self.width, self.height)
@@ -67,7 +71,8 @@ class Game:
         flat_arr = [item for sublist in self.board for item in sublist]
 
         # Convert the flattened array into a binary number
-        return int(''.join(map(str, flat_arr)), 2)
+       # return int(''.join(map(str, flat_arr)), 2)
+        return flat_arr
 
     def is_food_in_snake(self):
         for elem in self.snake.snakeList:
@@ -102,3 +107,20 @@ class Game:
         # still don't know if we should use all rewards gathered to this point (self.score) or just reward that we earned at this moment
         return new_state, reward, game_over
         # return new_state, self.score, game_over
+
+    def reset(self, seed: Optional[int] = None,) -> Tuple[ObsType, dict]:
+        """Returns:
+            observation (object): Observation of the initial state. This will be an element of :attr:`observation_space`
+                (typically a numpy array) and is analogous to the observation returned by :meth:`step`.
+            info (dictionary):  This dictionary contains auxiliary information complementing ``observation``. It should be analogous to
+                the ``info`` returned by :meth:`step`.
+        """
+        # TODO implement reset
+        #raise NotImplementedError
+        return self.get_state()
+        pass
+
+    def close(self):
+        #TODO impement close if we need it
+        #raise NotImplementedError
+        pass

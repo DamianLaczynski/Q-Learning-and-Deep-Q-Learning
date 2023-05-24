@@ -20,10 +20,10 @@ if __name__ == '__main__':
 
     env = game.Game(5, 5)
 
-    seed = 777
-    np.random.seed(seed)
-    seed_torch(seed)
-    obs, info = env.reset(seed=seed)
+#    seed = 777
+#    np.random.seed(seed)
+#    seed_torch(seed)
+#    obs, info = env.reset(seed=seed)
 
     # parameters
     num_frames = 10000
