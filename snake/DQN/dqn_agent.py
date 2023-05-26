@@ -1,4 +1,5 @@
 import os
+import random
 from typing import Dict, List, Tuple
 
 import gym
@@ -13,6 +14,8 @@ from IPython.display import clear_output
 import game
 from DQN.network import Network
 from DQN.replay_buffer import ReplayBuffer
+import display as ds
+import time
 
 
 class DQNAgent:
@@ -99,7 +102,8 @@ class DQNAgent:
         # epsilon greedy policy
         if self.epsilon > np.random.random():
             #selected_action = self.env.action_space.sample() #TODO action_space
-            selected_action = np.random.random() % 5
+            #selected_action = random.randint(a=0, b=4)
+            selected_action = np.random.randint(0, 4, 1)
         else:
             selected_action = self.dqn(
                 torch.FloatTensor(state).to(self.device)
@@ -134,12 +138,11 @@ class DQNAgent:
 
         return loss.item()
 
-    def train(self, num_frames: int, plotting_interval: int = 200):
+    def train(self, num_frames: int, plotting_interval: int = 10000):
         """Train the agent."""
         self.is_test = False
 
         state = self.env.reset()
-        #state = state[0]
         update_cnt = 0
         epsilons = []
         losses = []
@@ -156,9 +159,6 @@ class DQNAgent:
             # if episode ends
             if done:
                 state = self.env.reset()
-
-                #przez to wywalało błędy
-                #state = state[0]
 
                 scores.append(score)
                 score = 0
@@ -183,29 +183,30 @@ class DQNAgent:
 
             # plotting
             if frame_idx % plotting_interval == 0:
-                #if frame_idx > 6000:
                 self._plot(frame_idx, scores, losses, epsilons)
 
         self.env.close()
 
-    def test(self, video_folder: str) -> None: #TODO implement test. rm video_test and play snake with dqn
+    def test(self):
         """Test the agent."""
         self.is_test = True
 
-        # for recording a video
         naive_env = self.env
-        self.env = gym.wrappers.RecordVideo(self.env, video_folder=video_folder)
 
         state = self.env.reset()
         done = False
         score = 0
 
+        ds.display(naive_env)
         while not done:
             action = self.select_action(state)
             next_state, reward, done = self.step(action)
 
             state = next_state
             score += reward
+
+            ds.display(naive_env)
+            time.sleep(0.1)
 
         print("score: ", score)
         self.env.close()
@@ -224,6 +225,7 @@ class DQNAgent:
 
         # G_t   = r + gamma * v(s_{t+1})  if state != Terminal
         #       = r                       otherwise
+
         curr_q_value = self.dqn(state).gather(1, action)
         next_q_value = self.dqn_target(
             next_state

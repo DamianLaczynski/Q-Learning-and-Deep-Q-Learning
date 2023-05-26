@@ -7,7 +7,7 @@ if __name__ == '__main__':
     env = game.Game(5, 5)
 
     # parameters
-    num_frames = 100000
+    num_frames = 10000
     memory_size = 1000
     batch_size = 32
     target_update = 100
@@ -20,4 +20,5 @@ if __name__ == '__main__':
     agent.train(num_frames)
 
     #test
+    agent.test()
     #TODO run game with trained model

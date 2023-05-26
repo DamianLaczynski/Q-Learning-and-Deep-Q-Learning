@@ -176,8 +176,8 @@ class DQNAgent:
 
             # plotting
             if frame_idx % plotting_interval == 0:
-                if frame_idx > 6000:
-                    self._plot(frame_idx, scores, losses, epsilons)
+                #if frame_idx > 6000:
+                self._plot(frame_idx, scores, losses, epsilons)
 
         self.env.close()
 
