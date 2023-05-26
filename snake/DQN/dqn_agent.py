@@ -2,7 +2,6 @@ import os
 import random
 from typing import Dict, List, Tuple
 
-import gym
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
@@ -22,7 +21,7 @@ class DQNAgent:
     """DQN_from_git Agent interacting with environment.
 
     Attribute:
-        env (gym.Env): openAI Gym environment
+        env (game.Game): own Game snake
         memory (ReplayBuffer): replay memory to store transitions
         batch_size (int): batch size for sampling
         epsilon (float): parameter for epsilon greedy policy
@@ -40,7 +39,6 @@ class DQNAgent:
 
     def __init__(
             self,
-            #env: gym.Env,
             env: game.Game,
             memory_size: int,
             batch_size: int,
@@ -101,8 +99,6 @@ class DQNAgent:
         """Select an action from the input state."""
         # epsilon greedy policy
         if self.epsilon > np.random.random():
-            #selected_action = self.env.action_space.sample() #TODO action_space
-            #selected_action = random.randint(a=0, b=4)
             selected_action = np.random.randint(0, 4, 1)
         else:
             selected_action = self.dqn(
@@ -117,8 +113,7 @@ class DQNAgent:
 
     def step(self, action: np.ndarray) -> Tuple[np.ndarray, np.float64, bool]:
         """Take an action and return the response of the env."""
-        #next_state, reward, terminated, truncated, _ = self.env.step(action)
-        next_state, reward, done = self.env.step(action) # zwraca game_over ale zmianiona nazwa na done TODO czy to to samo? i zamiast new_state to next_state
+        next_state, reward, done = self.env.step(action)
 
         if not self.is_test:
             self.transition += [reward, next_state, done]

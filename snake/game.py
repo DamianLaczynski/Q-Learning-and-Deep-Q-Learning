@@ -32,8 +32,8 @@ class Game:
     def get_snake(self):
         return self.snake
 
-    #def set_direction(self, direction):
-    #    self.snake.direction = direction
+    def set_direction(self, direction):
+        self.snake.direction = direction
 
     def is_end(self):
         if self.snake.is_colision():
@@ -69,6 +69,12 @@ class Game:
         # Convert the flattened array into a binary number
        # return int(''.join(map(str, flat_arr)), 2)
         return flat_arr
+
+    def get_state_as_int(self):
+        flat_arr = [item for sublist in self.board for item in sublist]
+
+        # Convert the flattened array into a binary number
+        return int(''.join(map(str, flat_arr)), 2)
 
     def is_food_in_snake(self):
         for elem in self.snake.snakeList:

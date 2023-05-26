@@ -130,7 +130,7 @@ class DQNAgent:
 
         return loss.item()
 
-    def train(self, num_frames: int, plotting_interval: int = 200):
+    def train(self, num_frames: int, plotting_interval: int = 10000):
         """Train the agent."""
         self.is_test = False
 
