@@ -3,16 +3,24 @@ import torch.nn as nn
 
 
 class Network(nn.Module):
-    def __init__(self, in_dim: int, out_dim: int):
+    """Neural network
+
+    Attribute:
+        in_dim (int): liczba cech wejściowych
+        out_dim (int): liczba cech wyjściowych
+        out_features (int): liczba cech w warstwach ukrytych
+    """
+
+    def __init__(self, in_dim: int, out_dim: int, out_features: int = 128):
         """Initialization."""
         super(Network, self).__init__()
 
         self.layers = nn.Sequential(
-            nn.Linear(in_dim, 128),
+            nn.Linear(in_dim, out_features),
             nn.ReLU(),
-            nn.Linear(128, 128),
+            nn.Linear(out_features, out_features),
             nn.ReLU(),
-            nn.Linear(128, out_dim)
+            nn.Linear(out_features, out_dim)
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
