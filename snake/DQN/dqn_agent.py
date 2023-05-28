@@ -113,7 +113,7 @@ class DQNAgent:
 
     def step(self, action: np.ndarray) -> Tuple[np.ndarray, np.float64, bool]:
         """Take an action and return the response of the env."""
-        next_state, reward, done = self.env.step(action)
+        next_state, reward, done = self.env.step_dqn(action)
 
         if not self.is_test:
             self.transition += [reward, next_state, done]

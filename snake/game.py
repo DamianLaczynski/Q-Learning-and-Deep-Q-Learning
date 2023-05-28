@@ -7,10 +7,10 @@ ObsType = TypeVar("ObsType")
 
 class Game:
 
-    def __init__(self, width, height, mode="soft_wall", seed: int = None):
+    def __init__(self, width, height):
 
-        self.mode = mode  # soft_wall / hard_wall
-        self.seed = seed
+        self.mode = "soft_wall"  # soft_wall / hard_wall
+        self.score = 0
 
         self.width = width
         self.height = height
@@ -67,14 +67,12 @@ class Game:
         flat_arr = [item for sublist in self.board for item in sublist]
 
         # Convert the flattened array into a binary number
-       # return int(''.join(map(str, flat_arr)), 2)
-        return flat_arr
+        return int(''.join(map(str, flat_arr)), 2)
 
-    def get_state_as_int(self):
+    def get_state_as_vector(self):
         flat_arr = [item for sublist in self.board for item in sublist]
 
-        # Convert the flattened array into a binary number
-        return int(''.join(map(str, flat_arr)), 2)
+        return flat_arr
 
     def is_food_in_snake(self):
         for elem in self.snake.snakeList:
@@ -110,6 +108,34 @@ class Game:
         return new_state, reward, game_over
         #return new_state, self.score, game_over
 
+    def step_dqn(self, action):
+        self.set_direction(action)
+
+        hit_wall = self.snake.move()
+
+        if hit_wall and self.mode == "hard_wall":
+            return self.null_state, 0, True
+
+        reward = 0
+
+        if self.fruit.is_colision(self.snake.x, self.snake.y):
+            self.fruit.rand_new_position()
+            while self.is_food_in_snake():
+                self.fruit.rand_new_position()
+            self.snake.add_new_element()
+            self.score += 1
+            reward = 1
+
+        self.update_board()
+
+        game_over = self.is_end()
+
+        new_state = self.get_state_as_vector()
+
+        # still don't know if we should use all rewards gathered to this point (self.score) or just reward that we earned at this moment
+        return new_state, reward, game_over
+        #return new_state, self.score, game_over
+
     def reset(self, seed: Optional[int] = None):
         """Reset game
         :returns: state of board
@@ -127,7 +153,7 @@ class Game:
 
         self.score = 0
 
-        return self.get_state()
+        return self.get_state_as_vector()
 
     def close(self):
         #TODO impement close if we need it
