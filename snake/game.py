@@ -2,6 +2,16 @@ import snake
 import food
 
 
+def vect2d_to_int(arr, base):
+    result = 0
+    n = 1
+    for a in reversed(range(0, len(arr))):
+        for b in reversed(range(0, len(arr[a]))):
+            result += n * arr[a][b]
+            n *= base
+    return result
+
+
 class Game:
 
 
@@ -67,7 +77,7 @@ class Game:
         flat_arr = [item for sublist in self.board for item in sublist]
 
         # Convert the flattened array into a binary number
-        return int(''.join(map(str, flat_arr)), 2)
+        return vect2d_to_int(flat_arr, 3)
 
     def is_food_in_snake(self):
         for elem in self.snake.snakeList:
