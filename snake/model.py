@@ -3,8 +3,10 @@ import sys
 import time
 
 import numpy as np
+from IPython.core.display_functions import clear_output
 
 import game, display
+from typing import List
 
 
 def save_model(data, path):
@@ -19,7 +21,7 @@ def load_model(path):
     return model
 
 
-def train_model(size_x, size_y, tile_state_n, actions_n, episodes, learning_rate, discount_factor, exploration_prob_decay):
+def train_model(size_x, size_y, tile_state_n, actions_n, episodes: int, learning_rate, discount_factor, exploration_prob_decay):
     states_n = tile_state_n ** (size_x * size_y)
 
     q_table = np.zeros((states_n, actions_n))
@@ -32,22 +34,19 @@ def train_model(size_x, size_y, tile_state_n, actions_n, episodes, learning_rate
     progress = 0
     progress_bar_len = 20
 
-    print("Hyperparameters for training:")
-    print("%dx%d [%d states]" % (size_x, size_y, tile_state_n))
-    print("Learning rate:", learning_rate)
-    print("Discount factor:", discount_factor)
-    print("Exploration decay:", exploration_prob_decay)
-    print("-> Q_table: ", "{:.2f}".format(sys.getsizeof(q_table) / (1024 ** 3)),
-          "GB")  # print amount of memory that's allocated to q_table
-    print()
+    print_hiperparateters(size_x, size_y, tile_state_n, learning_rate,
+                          discount_factor, exploration_prob_decay, q_table, episodes, progress_bar_len)
 
-    print("Training for %d episodes:" % (episodes))
-    print("|" + "-" * progress_bar_len + "|")
-    print("|", end='')
+    update_cnt = 0
+    exploration_probs = []
+    scores = []
+    score = 0
+
+
 
     # Training
     for e in range(episodes):
-
+        score = 0
         if progress > episodes / progress_bar_len:
             progress = 0
             print("#", end='')
@@ -69,6 +68,10 @@ def train_model(size_x, size_y, tile_state_n, actions_n, episodes, learning_rate
 
             new_state, reward, done = training_env.step(action)
 
+            score += reward
+            if done:
+                scores.append(score)
+
             q_table[state, action] = q_table[state, action] + learning_rate * (
                         reward + discount_factor * np.max(q_table[new_state, :]) - q_table[state, action])
 
@@ -76,9 +79,13 @@ def train_model(size_x, size_y, tile_state_n, actions_n, episodes, learning_rate
 
         # exploration_prob = max(exploration_prob - exploration_prob_decay, 0)  # linear decay
         exploration_prob = max(min_exploration_prob, np.exp(-exploration_prob_decay * e))
+        exploration_probs.append(exploration_prob)
+
+
+
 
     print("#|")
-
+    _plot(episodes, scores, epsilons=exploration_probs)
     return q_table
 
 scores = []
@@ -105,3 +112,51 @@ def play(size_x, size_y, episodes, q_table, show_gameplay):
         scores.append(real_env.get_score())
 
     return scores
+
+
+def print_hiperparateters(
+        size_x,
+        size_y,
+        tile_state_n,
+        learning_rate,
+        discount_factor,
+        exploration_prob_decay,
+        q_table,
+        episodes,
+        progress_bar_len):
+    print("Hyperparameters for training:")
+    print("%dx%d [%d states]" % (size_x, size_y, tile_state_n))
+    print("Learning rate:", learning_rate)
+    print("Discount factor:", discount_factor)
+    print("Exploration decay:", exploration_prob_decay)
+    print("-> Q_table: ", "{:.2f}".format(sys.getsizeof(q_table) / (1024 ** 3)),
+          "GB")  # print amount of memory that's allocated to q_table
+    print()
+
+    print("Training for %d episodes:" % (episodes))
+    print("|" + "-" * progress_bar_len + "|")
+    print("|", end='')
+
+def _plot(
+        frame_idx: int,
+        scores: List[float],
+        losses: List[float] = None,
+        epsilons: List[float] = None,
+):
+    """Plot the training progresses."""
+    clear_output(True)
+    from matplotlib import pyplot as plt
+    plt.figure(figsize=(18, 5))
+    plt.subplot(131)
+    plt.title('Liczba epizodów: %s. Średni wynik: %s' % (frame_idx, np.mean(scores[-10:])))
+    plt.plot(scores)
+    """plt.subplot(132)
+    plt.title('loss')
+    plt.plot(losses)
+    """
+    if epsilons is not None:
+        plt.subplot(133)
+        plt.title('epsilons')
+        plt.plot(epsilons)
+    plt.show()
+
