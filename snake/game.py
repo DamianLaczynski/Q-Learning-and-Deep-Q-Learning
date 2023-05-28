@@ -1,12 +1,28 @@
 import snake
 import food
-from typing import (TypeVar, Tuple, Optional)
+from typing import (TypeVar, Optional)
 
 ObsType = TypeVar("ObsType")
 
 
 class Game:
+    """
+        Środowisko gry snake
+        :argument width: szerokość planszy
+        :argument height: wysokość planszy
 
+        :parameter mode: soft_wall / hard_wall, przechodzenie przez ściany lub nie
+        :var board: macierz przechowująca wszystkie elementy świata gry
+        :var snake(Snake): obiekt przechowujący inforamcję o snaku i jego logikę
+        :var fruit(Fruit): obiekt owocu, czyli celu snaka
+
+
+        is_end(): sprawdzenie warunku końca gry
+        update_board(): czyści planszę gry i ustawia na nowo wyszystkie elementy na planszy
+        get_state(): zwraca planszę zapisaną jako int
+        get_state_as_vector(): zwraca planszę jak wektor
+        reset(): przywracanie stanu gry do początkowego stanu. Zwraca stan początkowy
+    """
     def __init__(self, width, height):
 
         self.mode = "soft_wall"  # soft_wall / hard_wall
@@ -17,6 +33,12 @@ class Game:
 
         self.observation_space = width * height
         self.action_space = 4
+
+        self.board = []
+        self.snake = None
+        self.fruit = None
+
+        self.null_state = 0
 
         self.reset()
 
@@ -36,6 +58,8 @@ class Game:
         self.snake.direction = direction
 
     def is_end(self):
+        """Sprawdza warunek końca gry
+        """
         if self.snake.is_colision():
             return True
         else:
@@ -52,10 +76,13 @@ class Game:
 
         self.board[self.fruit.y][self.fruit.x] = 1
 
-    def set_direction(self, action):
-        if action == None:
+    def set_direction(self, action: int):
+        """Ustawienie kierunku, w którą będzie się poruszał Snake na postwie przekazanej akcji"""
+        if action is None:
             action = self.snake.direction
         new_direction = action
+
+        #uniemożliwienie ruchu przeciwnego do aktualnego kierunku
         if (self.snake.direction == 0 and new_direction == 1) or (self.snake.direction == 1 and new_direction == 0):
             return
         elif (self.snake.direction == 2 and new_direction == 3) or (self.snake.direction == 3 and new_direction == 2):
@@ -64,12 +91,18 @@ class Game:
             self.snake.direction = new_direction
 
     def get_state(self):
+        """
+            :returns: board as int
+        """
         flat_arr = [item for sublist in self.board for item in sublist]
 
         # Convert the flattened array into a binary number
         return int(''.join(map(str, flat_arr)), 2)
 
     def get_state_as_vector(self):
+        """
+        :returns: board as vector
+        """
         flat_arr = [item for sublist in self.board for item in sublist]
 
         return flat_arr
@@ -104,9 +137,7 @@ class Game:
 
         new_state = self.get_state()
 
-        # still don't know if we should use all rewards gathered to this point (self.score) or just reward that we earned at this moment
         return new_state, reward, game_over
-        #return new_state, self.score, game_over
 
     def step_dqn(self, action):
         self.set_direction(action)
@@ -132,12 +163,11 @@ class Game:
 
         new_state = self.get_state_as_vector()
 
-        # still don't know if we should use all rewards gathered to this point (self.score) or just reward that we earned at this moment
         return new_state, reward, game_over
-        #return new_state, self.score, game_over
 
     def reset(self, seed: Optional[int] = None):
         """Reset game
+        Przywracanie stanu gry do początkowego stanu
         :returns: state of board
                 """
         if seed is not None:
@@ -156,5 +186,4 @@ class Game:
         return self.get_state_as_vector()
 
     def close(self):
-        #TODO impement close if we need it
         pass
