@@ -142,8 +142,10 @@ class DQNAgent:
         epsilons = []
         losses = []
         scores = []
+
         score = 0
         epizodes_idx = 1
+
         while epizodes != epizodes_idx:
             action = self.select_action(state)
             next_state, reward, done = self.step(action)
@@ -151,12 +153,15 @@ class DQNAgent:
             state = next_state
             score += reward
 
-            # if episode ends
             if done:
                 epizodes_idx += 1
                 state = self.env.reset()
 
                 scores.append(score)
+                # plotting
+                if epizodes_idx % epizodes_interval == 0:
+                    self._plot(epizodes_idx, scores, losses, epsilons)
+
                 score = 0
 
             # if training is ready
@@ -177,9 +182,7 @@ class DQNAgent:
                 if update_cnt % self.target_update == 0:
                     self._target_hard_update()
 
-            # plotting
-            if epizodes_idx % epizodes_interval == 0:
-                self._plot(epizodes_idx, scores, losses, epsilons)
+
 
         self.env.close()
 

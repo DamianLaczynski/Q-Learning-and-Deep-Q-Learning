@@ -7,7 +7,7 @@ if __name__ == '__main__':
     env = game.Game(5, 5)
 
     # parameters
-    epizodes = 100
+    epizodes = 1000
     memory_size = 1000
     batch_size = 32
     target_update = 100
@@ -21,4 +21,3 @@ if __name__ == '__main__':
 
     #test
     agent.test()
-    #TODO run game with trained model
