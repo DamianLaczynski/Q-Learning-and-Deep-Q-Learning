@@ -8,10 +8,12 @@ class Food:
     board_h = 0
     value = 2
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, seed: int = None):
         self.board_w = width
         self.board_h = height
         self.rand_new_position()
+        if seed is not None:
+            random.seed(seed)
 
     def rand_new_position(self):
         self.x = random.randrange(0, self.board_w, 1)
