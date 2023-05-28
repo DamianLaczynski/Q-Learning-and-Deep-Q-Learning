@@ -2,7 +2,7 @@ import numpy as np
 
 import model
 
-q_table = model.train_model(size_x=5, size_y=5, tile_state_n=3, actions_n=4, episodes=10000,
+q_table = model.train_model(size_x=5, size_y=5, tile_state_n=4, actions_n=4, episodes=10000,
                             learning_rate=0.1, discount_factor=0.1, exploration_prob_decay=0.01)
 
 model.save_model(q_table, "./model1.npy")

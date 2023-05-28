@@ -58,7 +58,9 @@ class Game:
 
         # dodawanie wszystkich członów węża do tablicy
         for elem in self.snake.snakeList:
-            self.board[elem[1]][elem[0]] = 1
+            self.board[elem[1]][elem[0]] = 2
+
+        self.board[self.snake.y][self.snake.x] = 3
 
         self.board[self.fruit.y][self.fruit.x] = 1
 
@@ -77,7 +79,7 @@ class Game:
         flat_arr = [item for sublist in self.board for item in sublist]
 
         # Convert the flattened array into a binary number
-        return vect2d_to_int(flat_arr, 3)
+        return vect2d_to_int(flat_arr, 4)
 
     def is_food_in_snake(self):
         for elem in self.snake.snakeList:
