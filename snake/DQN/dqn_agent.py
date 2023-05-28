@@ -133,7 +133,7 @@ class DQNAgent:
 
         return loss.item()
 
-    def train(self, num_frames: int, plotting_interval: int = 10000):
+    def train(self, epizodes: int, epizodes_interval: int = 100):
         """Train the agent."""
         self.is_test = False
 
@@ -143,8 +143,8 @@ class DQNAgent:
         losses = []
         scores = []
         score = 0
-
-        for frame_idx in range(1, num_frames + 1):
+        epizodes_idx = 1
+        while epizodes != epizodes_idx:
             action = self.select_action(state)
             next_state, reward, done = self.step(action)
 
@@ -153,6 +153,7 @@ class DQNAgent:
 
             # if episode ends
             if done:
+                epizodes_idx += 1
                 state = self.env.reset()
 
                 scores.append(score)
@@ -177,8 +178,8 @@ class DQNAgent:
                     self._target_hard_update()
 
             # plotting
-            if frame_idx % plotting_interval == 0:
-                self._plot(frame_idx, scores, losses, epsilons)
+            if epizodes_idx % epizodes_interval == 0:
+                self._plot(epizodes_idx, scores, losses, epsilons)
 
         self.env.close()
 
@@ -248,12 +249,14 @@ class DQNAgent:
         clear_output(True)
         plt.figure(figsize=(18, 5))
         plt.subplot(131)
-        plt.title('frame %s. score: %s' % (frame_idx, np.mean(scores[-10:])))
+        plt.title('Liczba epizodów %s. Średni wynik: %s' % (frame_idx, np.mean(scores[-10:])))
         plt.plot(scores)
         plt.subplot(132)
-        plt.title('loss')
+        plt.title('Funkcja straty')
+        plt.xlabel('Liczba kroków')
         plt.plot(losses)
         plt.subplot(133)
-        plt.title('epsilons')
+        plt.title('Wartości epsilon')
+        plt.xlabel('Liczba kroków')
         plt.plot(epsilons)
         plt.show()

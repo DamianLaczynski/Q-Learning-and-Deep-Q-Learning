@@ -7,7 +7,7 @@ if __name__ == '__main__':
     env = game.Game(5, 5)
 
     # parameters
-    num_frames = 10000
+    epizodes = 100
     memory_size = 1000
     batch_size = 32
     target_update = 100
@@ -17,7 +17,7 @@ if __name__ == '__main__':
     agent = DQNAgent(env, memory_size, batch_size, target_update, epsilon_decay)
 
     #train
-    agent.train(num_frames)
+    agent.train(epizodes)
 
     #test
     agent.test()
