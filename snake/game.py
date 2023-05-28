@@ -76,10 +76,8 @@ class Game:
             self.snake.direction = new_direction
 
     def get_state(self):
-        flat_arr = [item for sublist in self.board for item in sublist]
 
-        # Convert the flattened array into a binary number
-        return vect2d_to_int(flat_arr, 4)
+        return vect2d_to_int(self.board, 4)
 
     def is_food_in_snake(self):
         for elem in self.snake.snakeList:
