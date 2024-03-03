@@ -1,2 +1,2 @@
-# Q-Learning i Deep Q-Learning
-Projekt na zaliczenie przedmiotu Sztuczna Inteligencja 
+# Q-Learning and Deep Q-Learning
+Comparison of reinforcement learning methods based on the Snake game
